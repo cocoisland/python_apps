@@ -1,0 +1,11 @@
+#Model serialization / marshalling
+pickle.dump(model, open("filename", "wb")
+unpickled_model = pickle.load(open("filename"))
+
+#execute from notebook
+
+url = "http://localhost:9000/api"
+data = json.dumps({'name':demo,'n1':123})
+r = requests.post(url, data)
+
+print r.json()

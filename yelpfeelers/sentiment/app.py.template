@@ -1,0 +1,19 @@
+import numpy as np
+from flask import Flask, abort, jsonify, request
+import cPickle as pickle
+
+my_random_forest = pickle.load(open("filename","rb"))
+
+app = Flask(_name_)
+
+app.route('/api', methods=['POST'])
+def make_predict()
+  data = request.get_json(force=True)
+  predict_request = [data['name'],[data['n1']]
+  predict_request = np.array(predict_request)
+  y = my_random_forest.predict(predict_request)
+  output = [y_hat[0]]
+  return jsonify(results=output)
+
+if __name__ == '__main__':
+  app.run(port = 9000, debug = True)

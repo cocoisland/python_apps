@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Yelp Feelers Review Rating and Text - {{ title }}</title>
+        <!-- CSS, keywords, metadata goes here -->
+       <link rel="stylesheet" href="https://unpkg.com/picnic">
+
+
+
+    </head>
+
+    <body>
+        <h1>Yelp Feelers!</h1>
+
+        {% block content %}
+        <form action="/predict" method="post">
+            <input type="text" name="review_id" placeholder="Id to add">
+            <input type="text" name="review_text" placeholder="Review_text to get rating">
+            <input type="submit" value="Get Review rating">
+        </form>
+
+        {% endblock %}
+    </body>
+</html>
