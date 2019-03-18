@@ -1,0 +1,16 @@
+import unittest
+import pandas as pd
+import pandas.testing as pd_testing
+
+class TestSplitWeight(unittest.TestCase):
+    def assertDataframequal(self, a, b, msg):
+        try:
+            pd_testing.assert_frame_equal(a, b)
+        except AssertionError as e:
+            raise self.failureException(msg) from e
+
+    def setUp(self):
+        self.addTypeEqualityFunc(pd.DataFrame, self.assertDataframeEqual)
+
+    def test_allZero(self):
+        self.assertEqual(pd.DataFrame([0,0,0,0]), pd.DataFrame([0,0,0,0]))

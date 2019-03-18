@@ -1,0 +1,12 @@
+docker container run hello-world
+docker container ls -a      # list container
+docker image ls             # list image
+docker run -it ubuntu bash
+
+# build docker image at directory where Dockerfile exist.
+docker build . -t python:latest
+
+docker run -i -t python /bin/bash
+pip3 install -i https://test.pypi.org/simple 'lambdata-cocoisland'
+python import lambdata_cocoisland; print(lambdata_cocoisland.VERSION) 
+
