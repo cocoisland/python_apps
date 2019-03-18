@@ -1,0 +1,21 @@
+(TwitOff) root@d32c1e1b70d9:/repos/soycode/TwitOff# FLASK_APP=twitoff:APP flask shell
+>>> from twitoff.models import *
+>>> DB.drop_all()
+>>> DB.create_all()
+>>> u1 = User(name='austen')
+>>> t1 = Tweet(text='Lambda School Rocks!')
+>>> u1.tweets
+[]
+>>> u1.tweets.append(t1)
+>>> DB.session.add(u1)
+>>> DB.session.add(t1)
+>>> DB.session.commit()
+>>> 
+
+>>> from twitoff.models import User
+>>> u1 = User.query.filter(User.name == 'austen').first()
+>>> u1
+<User austen>
+>>> u1.tweets
+[<Tweet Lambda School Rocks!>]
+>>> 

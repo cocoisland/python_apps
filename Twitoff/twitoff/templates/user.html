@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- <link rel="stylesheet" href="style.css" type="text/css"> -->
+<link rel="stylesheet" href="https://unpkg.com/picnic">
+
+<h2>User: {{ title }}</h2>
+
+<p>{{ message }}</p>
+
+<TABLE>
+   <thead>
+   <TR>
+   <TH>Created</TH>
+   <TH>Tweet ID</TH>
+   <TH>Text</TH>
+   </TR>
+   </thead>
+   {% for tweet in tweets %}
+   <TR>
+   <TD>{{ tweet.created_at.strftime('%Y-%m-%d') }}</TD>
+   <TD>{{ tweet.id }}</TD>
+   <TD>{{ tweet.full_text }}</TD>
+   </TR>
+   {% endfor %}
+</TABLE>
+
+<p>Previous Tweets from database</p>
+<TABLE>
+   <thead>
+   <TR>
+   <TH>Created</TH>
+   <TH>Tweet ID</TH>
+   <TH>Text</TH>
+   </TR>
+   </thead>
+   {% for tweet in db_tweets %}
+   <TR>
+   <TD>{{ tweet.created_at.strftime('%Y-%m-%d') }}</TD>
+   <TD>{{ tweet.id }}</TD>
+   <TD>{{ tweet.full_text }}</TD>
+   </TR>
+   {% endfor %}
+
+</TABLE>
+{% endblock %}

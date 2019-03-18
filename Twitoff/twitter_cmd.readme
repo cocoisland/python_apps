@@ -1,0 +1,29 @@
+from twitoff.twitter import *
+twitter_user = TWITTER.get_user('austen')
+tweets = twitter_user.timeline()
+
+# default tweets[0].text
+# count > 20, tweets[0].full_text
+
+tweets = twitter_user.timeline(count=200, exclude_replies=True, include_rts=False, tweet_mode='extended')
+
+tweet_text = tweets[0].full_text
+embedding = BASILICA.embed_sentence(tweet_text, model='twitter')
+
+>>> from twitoff.twitter import *
+>>> DB.drop_all()
+>>> DB.create_all()
+>>> twitter_user = TWITTER.get_user('austen')
+>>> tweets = twitter_user.timeline(count=200, exclude_replies=True, include_rts=False, tweet_mode='extended')
+>>> db_user = User(id=twitter_user.id, name=twitter_user.screen_name, newest_tweet_id=tweets[0].id)
+
+>>> for tweet in tweets:
+...   embedding = BASILICA.embed_sentence(tweet.full_text, model='twitter')
+...   db_tweet = Tweet(id=tweet.id, created_at=tweet.created_at, full_text=tweet.full_text[:500], embedding=embedding)
+...   DB.session.add(db_tweet)
+...   db_user.tweets.append(db_tweet)
+... 
+>>> DB.session.add(db_user)
+>>> DB.session.commit()
+A
+>>> 

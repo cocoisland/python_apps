@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="style.css" type="text/css" list-style="inside" >
+
+<h2>User: {{ title }}</h2>
+
+<p>{{ message }}</p>
+
+<style>
+.sli {
+  list-style:inside ;
+}
+</style>
+
+   <div class="sli" >
+
+   {% for user in users %}
+   <li> {{ user.name }} </li>
+   {% endfor %}
+
+   </div>
+{% endblock %}
