@@ -1,0 +1,5 @@
+git push - if mistype passwd and result in failed authentication.
+
+git remote -v
+git remote remove origin
+git remote add origin github.com/cocoisland/python_apps.git
