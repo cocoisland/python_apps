@@ -1,9 +1,11 @@
 """Prediction of Users based on Tweet embeddings."""
 import pandas as pd
 from .models import ReviewRating
-from .load_text import text_clean
+from .load_text import text_clean, BASILICA
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
+import numpy as np
+import pickle
 
 
 def fetchRating():
@@ -14,20 +16,6 @@ def fetchRating():
     df.loc[i] = (r.id, r.stars, r.review_text, r.embedding)
     i += 1
   return df
-
-  
-def prep_basilica_X(df):
-  x = df['embedding']
-  return x
-
-def prep_X(df, ptext):
-  x = df['review_text']
-  series_ptext = pd.Series(ptext)
-  x = x.append(series_ptext, ignore_index=True)
-  cv_transformer = CountVectorizer(analyzer = text_clean)
-  x= cv_transformer.fit_transform(x)
-  return x[:-1], x[-1:]
-
 
 def prep_Y(df):
   Cust = []
@@ -42,29 +30,37 @@ def prep_Y(df):
   df['threeStars'] = Cust
   y = df['threeStars']
   return y
+  
 
-def train_model(x, y):
+def countVectorizer_encoding(ptext):
+  df = fetchRating()
+  x = df['review_text']
+  series_ptext = pd.Series(ptext)
+  x = x.append(series_ptext, ignore_index=True)
+  cv_transformer = CountVectorizer(analyzer = text_clean)
+  x= cv_transformer.fit_transform(x)
+
+  y = prep_Y(df)
+  return x[:-1],y, x[-1:]
+
+
+def train_multinomialNB(x, y):
   nb = MultinomialNB()
   nb.fit(x,y)
   return nb
 
-# predict by countvectorizer
-def predict_text(predict_str):
-  df = fetchRating()
-  x, x_pred = prep_X(df,predict_str)
-  y = prep_Y(df)
-  model = train_model(x,y)
-  prediction = model.predict(x_pred)
-  return prediction
-
 from sklearn.linear_model import LogisticRegression
 
-def predict_basilica(predict_str):
-  df = fetchRating()
-  x = prep_basilica_X(df)
-  y = prep_Y(df)
-  model = LogisticRegression().fit(x,y)
+def train_basilica():
+  try:
+    model = pickle.load(open("./sentiment/model.pickle", "rb"))
+  except (OSError, IOError) as e:
+    df = fetchRating()
+    x = df['embedding']
+    x = np.stack(x, axis=0)
 
-  x_pred = BASILICA.embed_sentence(predict_str, model='product-reviews')
-  prediction = model.predict(x_pred.reshape(1,-1))
-  return prediction
+    y = prep_Y(df)
+    model = LogisticRegression(solver='lbfgs',multi_class='auto').fit(x,y)
+    pickle.dump(model, open("./sentiment/model.pickle", "wb"))
+
+  return model

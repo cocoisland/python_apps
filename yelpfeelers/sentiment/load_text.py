@@ -5,7 +5,7 @@ from .models import DB, ReviewRating
 import basilica
 BASILICA = basilica.Connection(config('BASILICA_KEY'))
 
-import json
+import json, sys
 import numpy as np
 
 #import nltk
@@ -25,8 +25,7 @@ def text_clean(message):
 
 
 def load_local_json():
-  DB.drop_all()
-  DB.create_all()
+  i=0
   path="./sentiment/data/review.json"
   with open(path, 'r') as f:
     try:
@@ -40,10 +39,15 @@ def load_local_json():
         stars=data['stars']
         db_review = ReviewRating(stars=data['stars'], review_text=str(unique_cleaned),embedding=embedding)
         DB.session.add(db_review)
-        DB.session.commit()
+        i += 1
+        msg = "loading %i " % (i)
+        sys.stdout.write(msg + chr(8) * len(msg))
+        sys.stdout.flush()
 
+      DB.session.commit()
     except Exception as e:
       print('Error processing input review json')
       raise e
     else:
       DB.session.commit()
+      return i

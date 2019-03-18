@@ -13,4 +13,6 @@ class ReviewRating(DB.Model):
         return '<ReviewRating {}>'.format(self.review_text)
         #return f'ReviewRating {self.stars}'
 
-
+class Misc(DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
+    message = DB.Column(DB.String(50))
