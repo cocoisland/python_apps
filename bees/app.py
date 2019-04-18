@@ -25,14 +25,16 @@ app.layout = html.Div([
         )],style={'width': '49%', 'display': 'inline-block'}),
 
         html.Div([
+            dcc.Graph(id='colony-time-series'),
+            dcc.Graph(id='pesticide-time-series'),
+
             dcc.Dropdown(
                 id='pesticide',
                 options=[{'label': i, 'value': i} for i in df.columns[6:12]],
                 value='nAllNeonic'
             ),
-            dcc.Graph(id='colony-time-series'),
-            ], style={'width': '49%', 'display': 'inline-block'}
-        )
+        ], style={'width': '49%', 'float': 'right', 'display': 'inline-block'})
+
     ],style={
         'borderBottom': 'thin lightgrey solid',
         'backgroundColor': 'rgb(250, 250, 250)',
@@ -41,23 +43,22 @@ app.layout = html.Div([
 
 ])
 
-def create_time_series(dff, pesticide_name, title):
+def create_time_series(dff, param, title):
     return {
         'data': [go.Scatter(
             x=dff['Year'],
-            y=dff[pesticide_name],
+            y=dff[param],
             mode='lines+markers'
         )],
         'layout': {
             'height': 225,
-            'margin': {'l': 20, 'b': 30, 'r': 10, 't': 10},
+            'margin': {'l': 30, 'b': 30, 'r': 10, 't': 10},
             'annotations': [{
                 'x': 0, 'y': 0.85, 'xanchor': 'left', 'yanchor': 'bottom',
                 'xref': 'paper', 'yref': 'paper', 'showarrow': False,
                 'align': 'left', 'bgcolor': 'rgba(255, 255, 255, 0.5)',
                 'text': title
             }],
-            #'yaxis': {'type': 'linear' if axis_type == 'Linear' else 'log'},
             'xaxis': {'showgrid': False}
         }
     }
@@ -65,15 +66,26 @@ def create_time_series(dff, pesticide_name, title):
 @app.callback(
     dash.dependencies.Output('colony-time-series', 'figure'),
     [dash.dependencies.Input('pesticide', 'value'),
-    dash.dependencies.Input('graph-with-slider', 'hoverData'),
-     dash.dependencies.Input('year-slider', 'value')
+    dash.dependencies.Input('graph-with-slider', 'hoverData')
      ])
-def update_timeseries(pesticide_name, hoverData, selected_year):
+def update_timeseries(pesticide_name, hoverData):
     hoverStateName = hoverData['points'][0]['location']
     dff = df.loc[df.state == hoverStateName, ['Year',pesticide_name,'Colonies']]
 
-    title = '<b>State:{} Year:{}<br>Pesticide:{}</b>'.format(hoverStateName,
-                                           selected_year, pesticide_name)
+    title = '<b>Bees Colonies in :{}</b>'.format(hoverStateName)
+    return create_time_series(dff, 'Colonies', title)
+
+@app.callback(
+    dash.dependencies.Output('pesticide-time-series', 'figure'),
+    [dash.dependencies.Input('pesticide', 'value'),
+    dash.dependencies.Input('graph-with-slider', 'hoverData')
+     ])
+def update_timeseries(pesticide_name, hoverData):
+    hoverStateName = hoverData['points'][0]['location']
+    dff = df.loc[df.state == hoverStateName, ['Year',pesticide_name,'Colonies']]
+
+    title = '<b>Pesticide:{} used in:{}</b>'.format(pesticide_name,
+                                                            hoverStateName)
     return create_time_series(dff, pesticide_name, title)
 
 
