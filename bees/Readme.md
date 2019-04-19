@@ -13,7 +13,7 @@ pip install dash-daq==0.1.0  # DAQ components (newly open-sourced!)
 pip install pandas
 python app.py
 
-Deployment to Heroku.
+### Deployment to Heroku.
 1. To turn on production, Change app.run_server(debug=True) to app.run_server() Add app = dash.Dash(name, external_stylesheets=external_stylesheets) server = app.server
 2. Create virtual env, python -m venv new_env
 3.Install dash and gunicorn library pip install dash==0.39.0 # The core dash backend pip install dash-daq==0.1.0 # DAQ components (newly open-sourced!) pip install gunicorn
